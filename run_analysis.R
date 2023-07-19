@@ -1,4 +1,8 @@
 run_analysis <- function() {
+    # Load libraries
+    library(data.table)
+    library(dplyr)
+    
     # Data Column Names
     setwd("UCI HAR Dataset")
     features <- readLines("features.txt")
@@ -27,6 +31,16 @@ run_analysis <- function() {
     test_data <- data.table(subject_test, X_test, y_test) 
     names(test_data) <- colNames
     
-    # Merge Train and Test Data
+    # Merge, Select, & Label Data
+    merged <- bind_rows(train_data, test_data)
+    selected <- select(merged, c(1, grep("mean[^Freq]", colNames), grep("std", colNames), 563))
+    setwd("UCI HAR Dataset")
+    activities <- readLines("activity_labels.txt")
+    activities <- gsub("^[0-9]+", "", activities)
+    activities <- trimws(activities)
+    labeled <- mutate(selected, Activity = activities[as.numeric(Activity)])
     
+    # Second Dataset
+    split(labeled, by = c("Subject", "Activity"))
+    tapply(labeled, c("Subject", "Activity"), mean)
 }
