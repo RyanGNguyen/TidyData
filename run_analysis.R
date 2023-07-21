@@ -41,6 +41,8 @@ run_analysis <- function() {
     activities <- gsub("^[0-9]+", "", activities)
     activities <- trimws(activities)
     labeled <- mutate(selected, Activity = activities[as.numeric(Activity)])
+    setwd("~/R/Coursera/Getting and Cleaning Data/TidyData")
+    save(labeled, file = "first_tidy_data.rda", compress = TRUE)
     
     # Second Dataset
     splitted <- split(labeled, by = c("Subject", "Activity"))
@@ -54,5 +56,5 @@ run_analysis <- function() {
         names(table) <- gsub("([X])(\\d+)(\\.)([A-Z]+)(_?)([A-Z]*)(\\.)", "", names(table))
         tidydata <- rbind(tidydata, table)
     }
-    df
+    save(tidydata, file = "second_tidy_data.rda", compress = TRUE)
 }
