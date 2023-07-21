@@ -2,6 +2,7 @@ run_analysis <- function() {
     # Load libraries
     library(data.table)
     library(dplyr)
+    library(tidyr)
     
     # Data Column Names
     setwd("UCI HAR Dataset")
@@ -41,6 +42,16 @@ run_analysis <- function() {
     labeled <- mutate(selected, Activity = activities[as.numeric(Activity)])
     
     # Second Dataset
-    split(labeled, by = c("Subject", "Activity"))
-    tapply(labeled, c("Subject", "Activity"), mean)
+    splitted <- split(labeled, by = c("Subject", "Activity"))
+    tables <- c()
+    for (i in 1:length(splitted)) {
+        means <- colMeans(as.data.table(splitted[i])[,2:67])
+        labels <- unlist(strsplit(names(splitted[i]), split = '\\.'))
+        table <- data.frame(t(means))
+        table <- cbind(labels[1], table, labels[2])
+        gsub("X[0-9]+\\.")
+        names(table) <- c("Subject", names(table)[2:67], "Activity")
+        tables <- c(tables, table)
+    }
+    tidy2 <- rbind(tables)
 }
