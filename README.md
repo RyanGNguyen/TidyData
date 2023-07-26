@@ -10,5 +10,19 @@ Afterwards, I made the train and test datasets in a similar manner. In both the 
 
 Lastly, I merged the datasets into one large dataset simplying by binding the rows of the train data to the rows of the test data. For the sake of future tidiness, I reordered the data by Subject and Activity. 
 
-# Selecting Merged Data
+# Extracting Measurements
+
+I used the function "select" from the dplyr library to select the data. Besides the mandatory "Subject" and "Activity" columns, I also selected every column that featured the pattern "std" for standard deviation and "mean[^Freq]" for mean but not mean frequency. 
+
+# Labeling Activities
+
+I loaded in the activities featured in the activity_labels.txt file, and processed them into a list of character vectors. Using the fact that each activity corresponded to an assigned number from 1-6, I simply used the mutate function to redefine the the Activity column and used the assigned numbers as indices that corresponded to their activity label. As an example, "WALKING" was represented with a number 1, and its index within the list of labels was 1. Therefore, I simply called list[activity number] to get "WALKING". 
+
+# Labeling Data With Descriptive Variable Names
+
+This was done earlier in the process when I initially named each column according to their measurement names. 
+
+# Second Data Set
+
+This portion of the process was more difficult than I initially expected, but I nonetheless got it done. In order to ensure I would properly find the means of each measurement according to their subject id and activity, I split the data by those two attributes, which generated a 180 element long list of data frames (e.g. first element of the list was Subject 1's "WALKING" measurements, second element was Subject 1's "WALKING_UPSTAIRS" data, etc.) Then, I looped through each dataframe in this list, applied the colMeans function (as well as other string/label tidying), and merged the data into one mega data table. After the work was done, I saved all of this as the second data set. 
 
